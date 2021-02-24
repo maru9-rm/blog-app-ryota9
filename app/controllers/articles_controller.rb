@@ -35,6 +35,12 @@ class ArticlesController < ApplicationController
         end
     end
 
+    def destroy
+        article = Article.find(params[:id])
+        article.destroy!
+        redirect_to root_path ,notice: '削除できたよ'
+    end
+
 
     private
     def article_params
