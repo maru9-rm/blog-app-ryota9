@@ -2,6 +2,7 @@ class ArticlesController < ApplicationController
     before_action :set_article , only: [:show, :edit, :update]
 
     def index
+        raise StandarError
         @articles = Article.all
     end
     def show
@@ -17,10 +18,9 @@ class ArticlesController < ApplicationController
             redirect_to article_path(@article) ,notice: '保存できたよ'
         else
             flash.now[:error] = '保存に失敗したよ'
-            render :new 
+            render :new
         end
     end
-
 
     def edit
     end
@@ -39,7 +39,6 @@ class ArticlesController < ApplicationController
         article.destroy!
         redirect_to root_path ,notice: '削除できたよ'
     end
-
 
     private
     def article_params
