@@ -21,4 +21,14 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
+  has_many :articles , dependent: :destroy
+  def has_written?(article)
+    articles.exists?(id: article.id)
+    # exists?は存在するのかどうかtrue falseで帰ってくる
+  end
+
+  def display_name
+    self.email.split('@').first
+    # splitは分割してハッシュにするやつ
+  end
 end
