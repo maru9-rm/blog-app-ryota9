@@ -21,7 +21,15 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
+  has_one :profile , dependent: :destroy
+  # 1対1はhas_one
   has_many :articles , dependent: :destroy
+  # has_many 1対N
+  delegate :age, :gender, to: :profile, allow_nil: true
+  # delegate - to ~ ~に-を委任する。 birthdayとかをprofileで設定したやつそのまま使うという宣言
+  # allow_nil: true delegateで持ってくるときにぼっち演算子を自動でやってくれる
+
+
   def has_written?(article)
     articles.exists?(id: article.id)
     # exists?は存在するのかどうかtrue falseで帰ってくる
@@ -31,4 +39,18 @@ class User < ApplicationRecord
     self.email.split('@').first
     # splitは分割してハッシュにするやつ
   end
+
+  def prepare_profile
+    profile || build_profile #「または」でさくっっと表現できる
+  end
+
+
+  def avatar_image
+    if profile&.avatar&.attached?
+      profile.avatar
+    else
+      'default-avatar.png'
+    end
+  end
+
 end
