@@ -2,7 +2,7 @@
 #
 # Table name: users
 #
-#  id                     :integer          not null, primary key
+#  id                     :bigint           not null, primary key
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
 #  remember_created_at    :datetime
@@ -28,12 +28,22 @@ class User < ApplicationRecord
   delegate :age, :gender, to: :profile, allow_nil: true
   # delegate - to ~ ~に-を委任する。 birthdayとかをprofileで設定したやつそのまま使うという宣言
   # allow_nil: true delegateで持ってくるときにぼっち演算子を自動でやってくれる
+  has_many :likes , dependent: :destroy
+  has_many :favorite_articles, through: :likes ,source: :article
 
 
   def has_written?(article)
     articles.exists?(id: article.id)
     # exists?は存在するのかどうかtrue falseで帰ってくる
   end
+
+  def has_liked?(article)
+    likes.exists?(article_id: article.id)
+  end
+
+
+
+
 
   def display_name
     self.email.split('@').first
